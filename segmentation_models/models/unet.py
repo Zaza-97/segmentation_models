@@ -55,6 +55,8 @@ def DecoderUpsamplingX2Block(filters, stage, use_batchnorm=False):
 
     def wrapper(input_tensor, skip=None):
         x = layers.UpSampling2D(size=2, name=up_name)(input_tensor)
+        print(x.shape)
+        print(input_tensor.shape)
 
         if skip is not None:
             x = layers.Concatenate(axis=concat_axis, name=concat_name)([x, skip])
