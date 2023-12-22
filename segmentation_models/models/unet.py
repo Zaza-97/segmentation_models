@@ -55,8 +55,8 @@ def DecoderUpsamplingX2Block(filters, stage, use_batchnorm=False):
 
     def wrapper(input_tensor, skip=None):
         x = layers.UpSampling2D(size=2, name=up_name)(input_tensor)
-        print(x.shape)
-        print(input_tensor.shape)
+        #print(x.shape)
+        #print(input_tensor.shape)
 
         if skip is not None:
             x = layers.Concatenate(axis=concat_axis, name=concat_name)([x, skip])
@@ -228,9 +228,5 @@ def Unet(
     # lock encoder weights for fine-tuning
     if encoder_freeze:
         freeze_model(backbone, **kwargs)
-
-    # loading model weights
-    if weights is not None:
-        model.load_weights(weights)
 
     return model
