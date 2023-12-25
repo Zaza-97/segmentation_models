@@ -152,7 +152,7 @@ def build_unet(
     x = layers.Activation(activation, name=activation)(x)
 
     # create keras model instance
-    model = models.Model(input_, x)
+    model = models.Model(inputs=input_, outputs=(x))
 
     return model
 
