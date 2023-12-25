@@ -137,7 +137,7 @@ def build_unet(
             skip = skips[i]
         else:
             skip = None
-
+        print(i)
         x = decoder_block(decoder_filters[i], stage=i, use_batchnorm=use_batchnorm)(x, skip)
 
     # model head (define number of output classes)
