@@ -139,7 +139,7 @@ def build_unet(
             skip = None
         print(i)
         x = decoder_block(decoder_filters[i], stage=i, use_batchnorm=use_batchnorm)(x, skip)
-
+    print('ok')
     # model head (define number of output classes)
     x = layers.Conv2D(
         filters=classes,
@@ -149,8 +149,9 @@ def build_unet(
         kernel_initializer='glorot_uniform',
         name='final_conv',
     )(x)
+    print('ok')
     x = layers.Activation(activation, name=activation)(x)
-
+    print('ok')
     # create keras model instance
     model = models.Model(inputs=input_, outputs=(x))
 
