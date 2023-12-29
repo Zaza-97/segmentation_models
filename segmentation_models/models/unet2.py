@@ -114,8 +114,8 @@ def build_unet2(
         skip_connection_layers,
         decoder_filters=(256, 128, 64, 32, 16),
         n_upsample_blocks=5,
-        classes=1,
-        activation='sigmoid',
+        #classes=1,
+        #activation='sigmoid',
         use_batchnorm=True,
 ):
     input_ = backbone.input
@@ -145,14 +145,13 @@ def build_unet2(
     x = layers.Conv2D(
         filters=classes,
         kernel_size=(3, 3),
+        strides=(2,2),
         padding='same',
         use_bias=True,
         kernel_initializer='glorot_uniform',
         name='final_conv',
     )(x)
-    print('ok')
     x = layers.Activation(activation, name=activation)(x)
-    print('ok')
     '''
     # create keras model instance
     model = models.Model(inputs=input_, outputs=(x))
@@ -167,8 +166,8 @@ def build_unet2(
 def Unet2(
          backbone,
          encoder_features,
-         classes=1,
-         activation='sigmoid',
+         #classes=1,
+         #activation='sigmoid',
          encoder_freeze=False,
          decoder_block_type='upsampling',
          decoder_filters=(256, 128, 64, 32, 16),
