@@ -108,7 +108,7 @@ def DecoderTransposeX2Block(filters, stage, use_batchnorm=False):
 #  Unet Decoder
 # ---------------------------------------------------------------------
 
-def build_unet(
+def build_unet2(
         backbone,
         decoder_block,
         skip_connection_layers,
@@ -141,6 +141,7 @@ def build_unet(
         x = decoder_block(decoder_filters[i], stage=i, use_batchnorm=use_batchnorm)(x, skip)
     print('ok')
     # model head (define number of output classes)
+    '''
     x = layers.Conv2D(
         filters=classes,
         kernel_size=(3, 3),
@@ -152,6 +153,7 @@ def build_unet(
     print('ok')
     x = layers.Activation(activation, name=activation)(x)
     print('ok')
+    '''
     # create keras model instance
     model = models.Model(inputs=input_, outputs=(x))
 
@@ -215,7 +217,7 @@ def Unet2(
         raise ValueError('Decoder block type should be in ("upsampling", "transpose"). '
                          'Got: {}'.format(decoder_block_type))
 
-    model = build_unet(
+    model = build_unet2(
         backbone=backbone,
         decoder_block=decoder_block,
         skip_connection_layers=encoder_features,
