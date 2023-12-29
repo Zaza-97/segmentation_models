@@ -221,8 +221,8 @@ def Unet2(
         decoder_block=decoder_block,
         skip_connection_layers=encoder_features,
         decoder_filters=decoder_filters,
-        classes=classes,
-        activation=activation,
+        #classes=classes,
+        #activation=activation,
         n_upsample_blocks=len(decoder_filters),
         use_batchnorm=decoder_use_batchnorm,
     )
