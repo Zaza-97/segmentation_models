@@ -162,16 +162,16 @@ def build_unet(
 #  Unet Model
 # ---------------------------------------------------------------------
 
-def Unet(
-        backbone,
-        encoder_features,
-        classes=1,
-        activation='sigmoid',
-        encoder_freeze=False,
-        decoder_block_type='upsampling',
-        decoder_filters=(256, 128, 64, 32, 16),
-        decoder_use_batchnorm=True,
-        **kwargs
+def Unet2(
+         backbone,
+         encoder_features,
+         classes=1,
+         activation='sigmoid',
+         encoder_freeze=False,
+         decoder_block_type='upsampling',
+         decoder_filters=(256, 128, 64, 32, 16),
+         decoder_use_batchnorm=True,
+         **kwargs
 ):
     """ Unet_ is a fully convolution neural network for image semantic segmentation
 
