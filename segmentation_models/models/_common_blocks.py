@@ -70,7 +70,7 @@ def Conv2dBn(
 
 # DUCK-Net layers 
 # https://github.com/RazvanDu/DUCK-Net/blob/main/CustomLayers/ConvBlock2D.py
-from keras.layers import BatchNormalizationV2, add
+from keras.layers import BatchNormalization, add
 from keras.layers import Conv2D
 
 kernel_initializer = 'he_uniform'
@@ -104,7 +104,7 @@ def conv_block_2D(x, filters, block_type, repeat=1, dilation_rate=1, size=3, pad
 
 
 def duckv2_conv2D_block(x, filters, size):
-    x = BatchNormalizationV2(axis=-1)(x)
+    x = BatchNormalization(axis=-1)(x)
     x1 = widescope_conv2D_block(x, filters)
 
     x2 = midscope_conv2D_block(x, filters)
@@ -119,7 +119,7 @@ def duckv2_conv2D_block(x, filters, size):
 
     x = add([x1, x2, x3, x4, x5, x6])
 
-    x = BatchNormalizationV2(axis=-1)(x)
+    x = BatchNormalization(axis=-1)(x)
 
     return x
 
@@ -127,11 +127,11 @@ def duckv2_conv2D_block(x, filters, size):
 def separated_conv2D_block(x, filters, size=3, padding='same'):
     x = Conv2D(filters, (1, size), activation='relu', kernel_initializer=kernel_initializer, padding=padding)(x)
 
-    x = BatchNormalizationV2(axis=-1)(x)
+    x = BatchNormalization(axis=-1)(x)
 
     x = Conv2D(filters, (size, 1), activation='relu', kernel_initializer=kernel_initializer, padding=padding)(x)
 
-    x = BatchNormalizationV2(axis=-1)(x)
+    x = BatchNormalization(axis=-1)(x)
 
     return x
 
@@ -140,12 +140,12 @@ def midscope_conv2D_block(x, filters):
     x = Conv2D(filters, (3, 3), activation='relu', kernel_initializer=kernel_initializer, padding='same',
                dilation_rate=1)(x)
 
-    x = BatchNormalizationV2(axis=-1)(x)
+    x = BatchNormalization(axis=-1)(x)
 
     x = Conv2D(filters, (3, 3), activation='relu', kernel_initializer=kernel_initializer, padding='same',
                dilation_rate=2)(x)
 
-    x = BatchNormalizationV2(axis=-1)(x)
+    x = BatchNormalization(axis=-1)(x)
 
     return x
 
@@ -154,17 +154,17 @@ def widescope_conv2D_block(x, filters):
     x = Conv2D(filters, (3, 3), activation='relu', kernel_initializer=kernel_initializer, padding='same',
                dilation_rate=1)(x)
 
-    x = BatchNormalizationV2(axis=-1)(x)
+    x = BatchNormalization(axis=-1)(x)
 
     x = Conv2D(filters, (3, 3), activation='relu', kernel_initializer=kernel_initializer, padding='same',
                dilation_rate=2)(x)
 
-    x = BatchNormalizationV2(axis=-1)(x)
+    x = BatchNormalization(axis=-1)(x)
 
     x = Conv2D(filters, (3, 3), activation='relu', kernel_initializer=kernel_initializer, padding='same',
                dilation_rate=3)(x)
 
-    x = BatchNormalizationV2(axis=-1)(x)
+    x = BatchNormalization(axis=-1)(x)
 
     return x
 
@@ -175,13 +175,13 @@ def resnet_conv2D_block(x, filters, dilation_rate=1):
 
     x = Conv2D(filters, (3, 3), activation='relu', kernel_initializer=kernel_initializer, padding='same',
                dilation_rate=dilation_rate)(x)
-    x = BatchNormalizationV2(axis=-1)(x)
+    x = BatchNormalization(axis=-1)(x)
     x = Conv2D(filters, (3, 3), activation='relu', kernel_initializer=kernel_initializer, padding='same',
                dilation_rate=dilation_rate)(x)
-    x = BatchNormalizationV2(axis=-1)(x)
+    x = BatchNormalization(axis=-1)(x)
     x_final = add([x, x1])
 
-    x_final = BatchNormalizationV2(axis=-1)(x_final)
+    x_final = BatchNormalization(axis=-1)(x_final)
 
     return x_final
 
@@ -189,9 +189,9 @@ def resnet_conv2D_block(x, filters, dilation_rate=1):
 def double_convolution_with_batch_normalization(x, filters, dilation_rate=1):
     x = Conv2D(filters, (3, 3), activation='relu', kernel_initializer=kernel_initializer, padding='same',
                dilation_rate=dilation_rate)(x)
-    x = BatchNormalizationV2(axis=-1)(x)
+    x = BatchNormalization(axis=-1)(x)
     x = Conv2D(filters, (3, 3), activation='relu', kernel_initializer=kernel_initializer, padding='same',
                dilation_rate=dilation_rate)(x)
-    x = BatchNormalizationV2(axis=-1)(x)
+    x = BatchNormalization(axis=-1)(x)
 
     return x
