@@ -117,7 +117,7 @@ def DecoderTransposeX2Block3D(filters, stage, use_batchnorm=False):
 
     def layer(input_tensor, skip=None):
         
-        x = tf.expand_dims(x, axis=0)
+        x = tf.expand_dims(input_tensor, axis=0)
         x = layers.Conv3DTranspose(
             filters,
             kernel_size=(4, 4, 4),
@@ -125,7 +125,7 @@ def DecoderTransposeX2Block3D(filters, stage, use_batchnorm=False):
             padding='same',
             name=transp_name,
             use_bias=not use_batchnorm,
-        )(input_tensor)
+        )(x)
         
         
         if use_batchnorm:
