@@ -116,7 +116,8 @@ def DecoderTransposeX2Block3D(filters, stage, use_batchnorm=False):
     concat_axis = bn_axis = -1 if backend.image_data_format() == 'channels_last' else 1
 
     def layer(input_tensor, skip=None):
-        
+
+        print(f'Input tensor shape = {input_tensor.shape}')
         x = tf.expand_dims(input_tensor, axis=0)
         x = layers.Conv3DTranspose(
             filters,
