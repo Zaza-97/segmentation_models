@@ -202,7 +202,7 @@ def DecoderTransposeX2Block3D(filters, stage, use_batchnorm=False):
         ) (x)
         
         
-        x = tf.add(x1, x2, x3)
+        x = tf.add_n([x1, x2, x3])
         x = tf.keras.layers.BatchNormalization(axis=-1)(x)
         x = tf.squeeze(x, axis=0)   
         return x
