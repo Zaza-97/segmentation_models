@@ -196,7 +196,9 @@ def DecoderTransposeX2Block3D(filters, stage, use_batchnorm=False):
             kernel_constraint=None,
             bias_constraint=None,
         ) (x)
-
+        
+        x = tf.add(x1, x2, x3)
+        x = tf.keras.layers.BatchNormalization(axis=-1)(x)
         x = tf.squeeze(x, axis=0)   
         return x
 
@@ -237,7 +239,9 @@ def build_unet2(
         else:
             skip = None
         print(i)
+        print(f'N° of filters = {decoder_filters[i]})
         x = decoder_block(decoder_filters[i], stage=i, use_batchnorm=use_batchnorm)(x, skip)
+        
     print('ok')
     # model head (define number of output classes)
     '''
