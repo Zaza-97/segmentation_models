@@ -120,6 +120,7 @@ def DecoderTransposeX2Block3D(filters, stage, use_batchnorm=False):
 
         print(f'Input tensor shape = {input_tensor.shape}')
         x = tf.expand_dims(input_tensor, axis=0)
+        print(f'Input tensor shape expanded = {x.shape}')
         x = layers.Conv3DTranspose(
             filters,
             kernel_size=(4, 4, 4),
