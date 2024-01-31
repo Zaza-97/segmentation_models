@@ -239,7 +239,7 @@ def build_unet2(
         else:
             skip = None
         print(i)
-        print(f'N° of filters = {decoder_filters[i]})
+        print(f'N° of filters = {decoder_filters[i]}')
         x = decoder_block(decoder_filters[i], stage=i, use_batchnorm=use_batchnorm)(x, skip)
         
     print('ok')
