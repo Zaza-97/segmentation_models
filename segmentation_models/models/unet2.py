@@ -1,4 +1,5 @@
 from keras_applications import get_submodules_from_kwargs
+import tensorflow as tf
 
 from ._common_blocks import Conv2dBn
 from ._utils import freeze_model, filter_keras_submodules
