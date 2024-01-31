@@ -144,7 +144,7 @@ def DecoderTransposeX2Block3D(filters, stage, use_batchnorm=False):
         x1 = tf.keras.layers.Conv3D(
             filters,
             kernel_size=(1, 2, 2),
-            strides=(1, 2, 2),
+            #strides=(1, 2, 2),
             padding='same',
             data_format=None,
             dilation_rate=(1, 1, 1),
@@ -164,7 +164,7 @@ def DecoderTransposeX2Block3D(filters, stage, use_batchnorm=False):
         x2 = tf.keras.layers.Conv3D(
             filters,
             kernel_size=(1, 4, 4),
-            strides=(1, 2, 2),
+            #strides=(1, 2, 2),
             padding='same',
             data_format=None,
             dilation_rate=(1, 1, 1),
@@ -181,11 +181,11 @@ def DecoderTransposeX2Block3D(filters, stage, use_batchnorm=False):
         ) (x)
         
         
-        '''
+        
         x3 = tf.keras.layers.Conv3D(
             filters,
             kernel_size=(1, 6, 6),
-            strides=(1, 3, 3),
+            # strides=(1, 3, 3),
             padding='same',
             data_format=None,
             dilation_rate=(1, 1, 1),
@@ -200,9 +200,9 @@ def DecoderTransposeX2Block3D(filters, stage, use_batchnorm=False):
             kernel_constraint=None,
             bias_constraint=None,
         ) (x)
-        '''
         
-        x = tf.add(x1, x2)
+        
+        x = tf.add(x1, x2, x3)
         x = tf.keras.layers.BatchNormalization(axis=-1)(x)
         x = tf.squeeze(x, axis=0)   
         return x
@@ -237,7 +237,6 @@ def build_unet2(
         x = Conv3x3BnReLU(512, use_batchnorm, name='center_block2')(x)
 
     # building decoder blocks
-    print(decoder_filters)
     for i in range(n_upsample_blocks):
 
         if i < len(skips):
