@@ -104,6 +104,44 @@ def DecoderTransposeX2Block(filters, stage, use_batchnorm=False):
     return layer
 
 
+
+def DecoderTransposeX2Block3D(filters, stage, use_batchnorm=False):
+    transp_name = 'decoder_stage{}a_transpose'.format(stage)
+    bn_name = 'decoder_stage{}a_bn'.format(stage)
+    relu_name = 'decoder_stage{}a_relu'.format(stage)
+    conv_block_name = 'decoder_stage{}b'.format(stage)
+    concat_name = 'decoder_stage{}_concat'.format(stage)
+
+    concat_axis = bn_axis = 3 if backend.image_data_format() == 'channels_last' else 1
+
+    def layer(input_tensor, skip=None):
+        
+        x = tf.expand_dims(x, axis=0)
+        x = layers.Conv3DTranspose(
+            filters,
+            kernel_size=(4, 4, 4),
+            strides=(1, 2, 2),
+            padding='same',
+            name=transp_name,
+            use_bias=not use_batchnorm,
+        )(input_tensor)
+        x = tf.squeeze(x, axis=0)
+        
+        if use_batchnorm:
+            x = layers.BatchNormalization(axis=bn_axis, name=bn_name)(x)
+
+        x = layers.Activation('relu', name=relu_name)(x)
+
+        if skip is not None:
+            x = layers.Concatenate(axis=concat_axis, name=concat_name)([x, skip])
+
+        x = Conv3x3BnReLU(filters, use_batchnorm, name=conv_block_name)(x)
+
+        return x
+
+    return layer
+
+
 # ---------------------------------------------------------------------
 #  Unet Decoder
 # ---------------------------------------------------------------------
