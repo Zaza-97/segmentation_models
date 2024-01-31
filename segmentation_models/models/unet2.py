@@ -310,7 +310,7 @@ def Unet2(
         decoder_block = DecoderUpsamplingX2Block
     elif decoder_block_type == 'transpose':
         decoder_block = DecoderTransposeX2Block
-    elif decoder_block_type == '3D'
+    elif decoder_block_type == '3D':
         decoder_block = DecoderTransposeX2Block3D
     else:
         raise ValueError('Decoder block type should be in ("upsampling", "transpose"). '
