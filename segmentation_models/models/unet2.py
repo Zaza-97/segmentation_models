@@ -80,7 +80,7 @@ def DecoderTransposeX2Block(filters, stage, use_batchnorm=False):
     concat_axis = bn_axis = 3 if backend.image_data_format() == 'channels_last' else 1
 
     def layer(input_tensor, skip=None):
-
+        print(f'Input tensor shape = {input_tensor.shape}')
         x = layers.Conv2DTranspose(
             filters,
             kernel_size=(4, 4),
@@ -96,6 +96,7 @@ def DecoderTransposeX2Block(filters, stage, use_batchnorm=False):
         x = layers.Activation('relu', name=relu_name)(x)
 
         if skip is not None:
+            print(f'Shape x = {x.shape}')
             x = layers.Concatenate(axis=concat_axis, name=concat_name)([x, skip])
 
         x = Conv3x3BnReLU(filters, use_batchnorm, name=conv_block_name)(x)
