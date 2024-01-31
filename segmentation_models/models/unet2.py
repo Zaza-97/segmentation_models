@@ -134,7 +134,8 @@ def DecoderTransposeX2Block3D(filters, stage, use_batchnorm=False):
         x = layers.Activation('relu', name=relu_name)(x)
         
         if skip is not None:
-            x = layers.Concatenate(axis=concat_axis, name=concat_name)([x, skip])
+            
+            x = layers.Concatenate(axis=concat_axis, name=concat_name)([x, tf.expand_dims(skip, axis=0)])
 
         
         # x = Conv3x3BnReLU(filters, use_batchnorm, name=conv_block_name)(x)
