@@ -120,7 +120,6 @@ def DecoderTransposeX2Block3D(filters, stage, use_batchnorm=False):
 
         print(f'Input tensor shape = {input_tensor.shape}')
         x = tf.expand_dims(input_tensor, axis=0)
-        print(f'Input tensor shape expanded = {x.shape}')
         x = layers.Conv3DTranspose(
             filters,
             kernel_size=(4, 4, 4),
@@ -238,6 +237,7 @@ def build_unet2(
         x = Conv3x3BnReLU(512, use_batchnorm, name='center_block2')(x)
 
     # building decoder blocks
+    print(decoder_filters)
     for i in range(n_upsample_blocks):
 
         if i < len(skips):
@@ -245,7 +245,7 @@ def build_unet2(
         else:
             skip = None
         print(i)
-        print(f'shape input first = {x.shape}')
+        # print(f'shape input first = {x.shape}')
         # print(f'N° of filters = {decoder_filters[i]}')
         x = decoder_block(decoder_filters[i], stage=i, use_batchnorm=use_batchnorm)(x, skip)
         
