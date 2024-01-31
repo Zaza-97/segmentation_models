@@ -112,7 +112,7 @@ def DecoderTransposeX2Block3D(filters, stage, use_batchnorm=False):
     conv_block_name = 'decoder_stage{}b'.format(stage)
     concat_name = 'decoder_stage{}_concat'.format(stage)
 
-    concat_axis = bn_axis = 3 if backend.image_data_format() == 'channels_last' else 1
+    concat_axis = bn_axis = -1 if backend.image_data_format() == 'channels_last' else 1
 
     def layer(input_tensor, skip=None):
         
@@ -125,18 +125,78 @@ def DecoderTransposeX2Block3D(filters, stage, use_batchnorm=False):
             name=transp_name,
             use_bias=not use_batchnorm,
         )(input_tensor)
-        x = tf.squeeze(x, axis=0)
+        
         
         if use_batchnorm:
             x = layers.BatchNormalization(axis=bn_axis, name=bn_name)(x)
 
         x = layers.Activation('relu', name=relu_name)(x)
-
+        
         if skip is not None:
             x = layers.Concatenate(axis=concat_axis, name=concat_name)([x, skip])
 
-        x = Conv3x3BnReLU(filters, use_batchnorm, name=conv_block_name)(x)
+        
+        # x = Conv3x3BnReLU(filters, use_batchnorm, name=conv_block_name)(x)
+        x1 = tf.keras.layers.Conv3D(
+            filters,
+            kernel_size=(1, 2, 2),
+            strides=(1, 2, 2),
+            padding='same',
+            data_format=None,
+            dilation_rate=(1, 1, 1),
+            groups=1,
+            activation='relu',
+            use_bias=True,
+            kernel_initializer='he_uniform',
+            bias_initializer='zeros',
+            kernel_regularizer=None,
+            bias_regularizer=None,
+            activity_regularizer=None,
+            kernel_constraint=None,
+            bias_constraint=None,
+        ) (x)
 
+
+        x2 = tf.keras.layers.Conv3D(
+            filters,
+            kernel_size=(1, 4, 4),
+            strides=(1, 2, 2),
+            padding='same',
+            data_format=None,
+            dilation_rate=(1, 1, 1),
+            groups=1,
+            activation='relu',
+            use_bias=True,
+            kernel_initializer='he_uniform',
+            bias_initializer='zeros',
+            kernel_regularizer=None,
+            bias_regularizer=None,
+            activity_regularizer=None,
+            kernel_constraint=None,
+            bias_constraint=None,
+        ) (x)
+        
+        
+        x3 = tf.keras.layers.Conv3D(
+            filters,
+            kernel_size=(1, 6, 6),
+            strides=(1, 3, 3),
+            padding='same',
+            data_format=None,
+            dilation_rate=(1, 1, 1),
+            groups=1,
+            activation='relu',
+            use_bias=True,
+            kernel_initializer='he_uniform',
+            bias_initializer='zeros',
+            kernel_regularizer=None,
+            bias_regularizer=None,
+            activity_regularizer=None,
+            kernel_constraint=None,
+            bias_constraint=None,
+        ) (x)
+
+        x = tf.squeeze(x, axis=0)   
         return x
 
     return layer
@@ -250,6 +310,8 @@ def Unet2(
         decoder_block = DecoderUpsamplingX2Block
     elif decoder_block_type == 'transpose':
         decoder_block = DecoderTransposeX2Block
+    elif decoder_block_type == '3D'
+        decoder_block = DecoderTransposeX2Block3D
     else:
         raise ValueError('Decoder block type should be in ("upsampling", "transpose"). '
                          'Got: {}'.format(decoder_block_type))
