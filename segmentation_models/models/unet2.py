@@ -70,6 +70,61 @@ def DecoderUpsamplingX2Block(filters, stage, use_batchnorm=False):
     return wrapper
 
 
+def AttentionBlock(x, skip, i_filters):
+    g1 = layers.Conv2D(i_filters,kernel_size = 1)(skip) 
+    g1 = layers.BatchNormalization()(g1)
+    x1 = layers.Conv2D(i_filters,kernel_size = 1)(x) 
+    x1 = layers.BatchNormalization()(x1)
+
+    g1_x1 = layers.Add()([g1,x1])
+    psi = layers.Activation('relu')(g1_x1)
+    psi = layers.Conv2D(1,kernel_size = 1)(psi) 
+    psi = layers.BatchNormalization()(psi)
+    psi = layers.Activation('sigmoid')(psi)
+    x = layers.Multiply()([x, psi])
+    return x
+
+
+def DecoderTransposeX2Block_attention(filters, stage, use_batchnorm=False):
+    transp_name = 'decoder_stage{}a_transpose'.format(stage)
+    bn_name = 'decoder_stage{}a_bn'.format(stage)
+    relu_name = 'decoder_stage{}a_relu'.format(stage)
+    conv_block_name = 'decoder_stage{}b'.format(stage)
+    concat_name = 'decoder_stage{}_concat'.format(stage)
+
+    concat_axis = bn_axis = 3 if backend.image_data_format() == 'channels_last' else 1
+
+    def layer(input_tensor, skip=None):
+        print(f'Input tensor shape pre filtering= {input_tensor.shape}')
+        x = layers.Conv2DTranspose(
+            filters,
+            kernel_size=(4, 4),
+            strides=(2, 2),
+            padding='same',
+            name=transp_name,
+            use_bias=not use_batchnorm,
+        )(input_tensor)
+
+        print(f'Input tensor shape post filtering= {x.shape}')
+        
+        
+        if use_batchnorm:
+            x = layers.BatchNormalization(axis=bn_axis, name=bn_name)(x)
+            
+        x = layers.Activation('relu', name=relu_name)(x)
+
+        if skip is not None:   
+            print(f'Skip tensor shape  filtering= {skip.shape}')
+            x = AttentionBlock(x, skip, filters)
+            x = layers.Concatenate(axis=concat_axis, name=concat_name)([x, skip])
+            
+        x = Conv3x3BnReLU(filters, use_batchnorm, name=conv_block_name)(x)
+
+        return x
+
+    return layer
+
+
 def DecoderTransposeX2Block(filters, stage, use_batchnorm=False):
     transp_name = 'decoder_stage{}a_transpose'.format(stage)
     bn_name = 'decoder_stage{}a_bn'.format(stage)
@@ -323,6 +378,8 @@ def Unet2(
         decoder_block = DecoderTransposeX2Block
     elif decoder_block_type == '3D':
         decoder_block = DecoderTransposeX2Block3D
+    elif: decoder_block_type == 'transpose_att':
+        decoder_block = DecoderTransposeX2Block_attention
     else:
         raise ValueError('Decoder block type should be in ("upsampling", "transpose"). '
                          'Got: {}'.format(decoder_block_type))
