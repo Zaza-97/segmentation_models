@@ -114,7 +114,7 @@ def DecoderTransposeX2Block_attention(filters, stage, use_batchnorm=False):
         x = layers.Activation('relu', name=relu_name)(x)
 
         if skip is not None:   
-            print(f'Skip tensor shape  filtering= {skip.shape}')
+            print(f'Skip tensor shape = {skip.shape}')
             x = AttentionBlock(x, skip, filters)
             x = layers.Concatenate(axis=concat_axis, name=concat_name)([x, skip])
             
